@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Focus Timer</title>
+  <style>
+    /* CSS styling for the timer */
+    body {
+      font-family: Lucida, monospace;
+      text-align: center;
+      margin-top: 100px;
+    }
+    body{
+      background-color: rgb(256, 244, 196);
+    }
+    .button {
+      background-color: gainsboro;
+    }
+    h1 {
+      font-size: 48px;
+    }
+
+    #timer {
+      font-size: 72px;
+      margin-top: 40px;
+    }
+
+    #controls {
+      margin-top: 40px;
+    }
+
+    button {
+      font-size: 24px;
+      padding: 10px 20px;
+      margin: 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Focus Timer</h1>
+
+    <button id="start">Start</button>
+    <button id="pause">Pause</button>
+    <button id="reset">Reset</button>
+  </div>
+
+  <script>
+    // JavaScript code for the timer functionality
+    var timerDisplay = document.getElementById('timer');
+    var startButton = document.getElementById('start');
+    var pauseButton = document.getElementById('pause');
+    var resetButton = document.getElementById('reset');
+   
+
+    startButton.addEventListener('click', function() {
+      timerInterval = setInterval(updateTimer, 1000);
+      startButton.disabled = true;
+      pauseButton.disabled = false;
+      resetButton.disabled = false;
+    });
+
+    pauseButton.addEventListener('click', function() {
+      clearInterval(timerInterval);
+      startButton.disabled = false;
+      pauseButton.disabled = true;
+      resetButton.disabled = false;
+    });
+
+    resetButton.addEventListener('click', function() {
+      clearInterval(timerInterval);
+      minutes = 25;
+      seconds = 0;
+      timerDisplay.textContent = "25:00";
+      startButton.disabled = false;
+      pauseButton.disabled = true;
+      resetButton.disabled = true;
+    });
+  </script>
+</body>
+</html>
