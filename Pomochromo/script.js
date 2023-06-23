@@ -29,17 +29,21 @@ function secondsTimer() {
 }
 
 function pomodoro(){
+    //logic to determine pomodoro loop
     if (loop[reps] === "work"){
+        document.getElementById("label").textContent = "Get to Work!";
         minutes = 24;
         seconds = 0;
         minutesInterval = setInterval(minutesTimer, 60000);
         secondsInterval = setInterval(secondsTimer, 1000);
     } else if (loop[reps] === "break"){
+        document.getElementById("label").textContent = "Five Minute Break."
         minutes = 4;
         seconds = 0;
         minutesInterval = setInterval(minutesTimer, 60000);
         secondsInterval = setInterval(secondsTimer, 1000);
     } else {
+        document.getElementById("label").textContent = "Fifteen Minute Break."
         minutes = 14;
         seconds = 0;
         minutesInterval = setInterval(minutesTimer, 60000);
@@ -68,7 +72,7 @@ function reset(){
   reps = 0;
   minutes = 25;
   seconds = 0;
-  document.getElementById("timer").textContent = minutes + ":" + seconds;
+  document.getElementById("timer").textContent = minutes + ":" + "0" + seconds;
   document.getElementById("start").textContent = "Start";
 }
 

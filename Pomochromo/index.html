@@ -4,8 +4,15 @@
   <title>Focus Timer</title>
   <style>
     /* CSS styling for the timer */
+    #timer-container{
+      width: 300px;
+      margin: auto;
+      background-color: rgb(139, 187, 151); 
+      border-radius: 5px;
+    }
+
     body {
-      font-family: Lucida, monospace;
+      font-family: Lucida, sans-serif;
       text-align: center;
       margin-top: 100px;
     }
@@ -15,19 +22,29 @@
     }
 
     .button {
-      border-radius: 12px;
-      background-color: #F7E7CE;
-      font-family: Lucida, monospace;
+      border-radius: 5px;
+      background-color: #fffaeb;
+      font-family: Lucida, sans-serif;
+      font-weight: bold;
+      border: none;
+      color: rgb(115, 165, 128);
+      box-shadow: 0px 6px 0px #bfbbaf;
+
     }
 
     h1 {
-      font-family: Lucida, monospace;
+      font-family: Lucida, sans-serif;
       font-size: 48px;
     }
 
+    #label {
+      padding-top: 20px;
+    }
+
     #timer {
-      font-size: 72px;
-      margin-top: 40px;
+      font-size: 80px;
+      margin-top: 1px;
+      font-weight: bold;
     }
 
     #controls {
@@ -35,7 +52,6 @@
     }
 
     button {
-      border-radius: 12px;
       font-family: Lucida, monospace;
       font-size: 24px;
       padding: 10px 20px;
@@ -46,12 +62,14 @@
 </head>
 <button class="button" onclick="location.href='https://www.youtube.com/watch?v=JnGSFHazTkg'">Blocked Websites</button>
 <body>
-
   <h1 style="color:#3E363F">Focus Timer</h1>
-  <div style="color:#3E363F" id="timer">25:00</div>
-  <div id="controls">
-    <button class="button" id="start" onclick="startTimer()">Start</button>
-    <button class="button" id="reset" onclick="reset()">Reset</button>
-
+  <div id = "timer-container">
+    <h2 style="color:#ffffff" id = "label">Time to Work!</h2>
+    <div style="color:#ffffff" id="timer">25:00</div>
+  </div>
+  <div id = "controls">
+  <button class="button" id="start" onclick="startTimer()">Start</button>
+  <button class="button" id="reset" onclick="reset()">Reset</button>
+  </div>
 </body>
 </html>
