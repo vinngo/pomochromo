@@ -9,13 +9,19 @@
       text-align: center;
       margin-top: 100px;
     }
-    body{
-      background-color: rgb(256, 244, 196);
+
+    body {
+      background-color: rgb(115, 165, 128);
     }
+
     .button {
-      background-color: gainsboro;
+      border-radius: 12px;
+      background-color: #F7E7CE;
+      font-family: Lucida, monospace;
     }
+
     h1 {
+      font-family: Lucida, monospace;
       font-size: 48px;
     }
 
@@ -29,51 +35,107 @@
     }
 
     button {
+      border-radius: 12px;
+      font-family: Lucida, monospace;
       font-size: 24px;
       padding: 10px 20px;
       margin: 0 10px;
     }
   </style>
+
 </head>
+<button class="button" onclick="location.href='https://www.youtube.com/watch?v=JnGSFHazTkg'">Blocked Websites</button>
 <body>
-  <h1>Focus Timer</h1>
 
-    <button id="start">Start</button>
-    <button id="pause">Pause</button>
-    <button id="reset">Reset</button>
-  </div>
+  <h1 style="color:#3E363F">Focus Timer</h1>
+  <div style="color:#3E363F" id="timer">25:00</div>
+  <div id="controls">
+    <button class="button" id="start" onclick="start()">Start</button>
+    <button class="button" id="reset" onclick="reset()">Reset</button>
+    <script>
+var seconds = 0;
+var minutes = 25;
+var interval;
+const loop = ["work", "break", "work", "break", "work",
+"longbreak"];
+var reps = 0;
+var minutesInterval;
+var secondsInterval;
 
-  <script>
-    // JavaScript code for the timer functionality
-    var timerDisplay = document.getElementById('timer');
-    var startButton = document.getElementById('start');
-    var pauseButton = document.getElementById('pause');
-    var resetButton = document.getElementById('reset');
-   
+function start() {
+    
+    minutes = 24;
+    seconds = 59;
 
-    startButton.addEventListener('click', function() {
-      timerInterval = setInterval(updateTimer, 1000);
-      startButton.disabled = true;
-      pauseButton.disabled = false;
-      resetButton.disabled = false;
-    });
+    //method to update time on the screen
+    document.getElementById("timer").textContent = minutes + ":" + seconds;
 
-    pauseButton.addEventListener('click', function() {
-      clearInterval(timerInterval);
-      startButton.disabled = false;
-      pauseButton.disabled = true;
-      resetButton.disabled = false;
-    });
+    minutesInterval = setInterval(minutesTimer, 60000)
+    secondsInterval = setInterval(secondsTimer, 1000)
 
-    resetButton.addEventListener('click', function() {
-      clearInterval(timerInterval);
-      minutes = 25;
-      seconds = 0;
-      timerDisplay.textContent = "25:00";
-      startButton.disabled = false;
-      pauseButton.disabled = true;
-      resetButton.disabled = true;
-    });
-  </script>
+    function minutesTimer() {
+        if (minutes != 0){
+            minutes = minutes - 1;
+        }
+    }
+
+    function secondsTimer() {
+        seconds = seconds - 1;
+        document.getElementById("timer").textContent = minutes + ":" + seconds;
+        console.log(minutes + ":" + seconds);
+        if (seconds <= 0){
+            if (minutes <= 0){
+                clearInterval(minutesInterval);
+                clearInterval(secondsInterval);
+                reps += 1;
+                pomodoro();
+            }
+            seconds = 60;
+        }
+    }
+
+
+
+    function pomodoro(){
+        if (loop[reps] === "work"){
+            minutes = 24;
+            seconds = 0;
+            minutesInterval = setInterval(minutesTimer, 60000);
+            secondsInterval = setInterval(secondsTimer, 1000);
+        } else if (loop[reps] === "break"){
+            minutes = 4;
+            seconds = 0;
+            minutesInterval = setInterval(minutesTimer, 60000);
+            secondsInterval = setInterval(secondsTimer, 1000);
+        } else {
+            minutes = 14;
+            seconds = 0;
+            minutesInterval = setInterval(minutesTimer, 60000);
+            secondsInterval = setInterval(secondsTimer, 1000);
+        }      
+    }
+}
+
+function pause(){
+  clearInterval(minutesInterval);
+  clearInterval(secondsInterval);
+}
+
+function reset(){
+  clearInterval(minutesInterval);
+  clearInterval(secondsInterval);
+  reps = 0;
+  minutes = 25;
+  seconds = 0;
+  document.getElementById("timer").textContent = minutes + ":" + seconds;
+}
+
+function resume(){
+  minutesInterval = setInterval(minutesTimer, 60000);
+  secondsInterval = setInterval(secondsTimer, 1000);
+}
+
+
+    </script>
 </body>
 </html>
