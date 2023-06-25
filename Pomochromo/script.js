@@ -22,7 +22,7 @@ function minutesTimer() {
 
 function secondsTimer() {
     seconds = seconds - 1;
-    document.getElementById("timer").textContent = minutes + ":" + seconds;
+    document.getElementById("timer").textContent = (minutes < 10 ? '0' + minutes : minutes)+ ":" + (seconds < 10 ? '0' + seconds: seconds);
     console.log(minutes + ":" + seconds);
     if (seconds <= 0){
         if (minutes <= 0){
@@ -108,4 +108,3 @@ function startTimer(){
         alternate();
     }
 }
-
