@@ -1,72 +1,83 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Focus Timer</title>
-  <style>
-    /* CSS styling for the timer */
-    #timer-container{
-      width: 300px;
-      margin: auto;
-      background-color: rgb(139, 187, 151); 
-      border-radius: 5px;
-    }
+  <head>
+    <title>Focus Timer</title>
+    <style>
+      /* CSS styling for the timer */
+      #timer-container {
+        width: 300px;
+        margin: auto;
+        background-color: rgb(139, 187, 151);
+        border-radius: 5px;
+      }
 
-    body {
-      font-family: Lucida, sans-serif;
-      text-align: center;
-      margin-top: 100px;
-    }
+      body {
+        font-family: Lucida, sans-serif;
+        text-align: center;
+        margin-top: 100px;
+      }
 
-    body {
-      background-color: rgb(115, 165, 128);
-    }
+      body {
+        background-color: rgb(115, 165, 128);
+      }
 
-    button {
-      border-radius: 5px;
-      background-color: #fffaeb;
-      font-family: Lucida, sans-serif;
-      font-weight: bold;
-      border: none;
-      color: rgb(115, 165, 128);
-      box-shadow: 0px 6px 0px #bfbbaf;
-      font-size: 24px;
-      padding: 10px 20px;
-      margin: 0 10px;
+      .button1 {
+        border-radius: 5px;
+        background-color: #fffaeb;
+        font-family: Lucida, sans-serif;
+        font-weight: bold;
+        border: none;
+        color: rgb(115, 165, 128);
+        box-shadow: 0px 6px 0px #bfbbaf;
+        font-size: 24px;
+        padding: 10px 20px;
+        margin: 0 10px;
+      }
 
-    }
+      .option {
+        border-radius: 5px;
+        font-family: Lucida, sans-serif;
+        font-weight: bold;
+        background-color: transparent;
+        color: rgb(255, 255, 255);
+        border: none;
+        font-size: 12px;
+        padding-top: 20px;
+      }
 
-    h1 {
-      font-family: Lucida, sans-serif;
-      font-size: 48px;
-    }
+      h1 {
+        font-family: Lucida, sans-serif;
+        font-size: 48px;
+      }
 
-    #label {
-      padding-top: 20px;
-    }
+      #label {
+        padding-top: 20px;
+      }
 
-    #timer {
-      font-size: 80px;
-      margin-top: 1px;
-      font-weight: bold;
-    }
+      #timer {
+        font-size: 80px;
+        margin-top: 1px;
+        font-weight: bold;
+      }
 
-    #controls {
-      margin-top: 40px;
-    }
-
-  </style>
-  <script src = "script.js"></script>
-</head>
-<button class="button" onclick="location.href='https://www.youtube.com/watch?v=JnGSFHazTkg'">Blocked Websites</button>
-<body>
-  <h1 style="color:#3E363F">Focus Timer</h1>
-  <div id = "timer-container">
-    <h2 style="color:#ffffff" id = "label">Time to Work!</h2>
-    <div style="color:#ffffff" id="timer">25:00</div>
-  </div>
-  <div id = "controls">
-  <button class="button" id="start">Start</button>
-  <button class="button" id="reset">Reset</button>
-  </div>
-</body>
+      #controls {
+        margin-top: 40px;
+      }
+    </style>
+    <script src="script.js"></script>
+  </head>
+  <!--<button class="button1" onclick="location.href='https://www.youtube.com/watch?v=JnGSFHazTkg'">Blocked Websites</button>-->
+  <body>
+    <div id="timer-container">
+      <button class="option" id="pomodoro">Pomodoro</button>
+      <button class="option" id="short_break">Short Break</button>
+      <button class="option" id="long_break">Long Break</button>
+      <h2 style="color: #ffffff" id="label">Time to Work!</h2>
+      <div style="color: #ffffff" id="timer">25:00</div>
+    </div>
+    <div id="controls">
+      <button class="button1" id="start">Start</button>
+      <button class="button1" id="reset">Reset</button>
+    </div>
+  </body>
 </html>
