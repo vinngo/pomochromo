@@ -2,7 +2,7 @@
     "name": "Pomochromo",
     "version": "1.0.0",
     "description": "Focus Timer",
-    "manifest_version": "3", 
+    "manifest_version": 3, 
     "action":{
         "default_popup": "index.html",
         "default_title": "Pomochromo"
