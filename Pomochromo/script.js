@@ -7,6 +7,13 @@ var reps = 0;
 var minutesInterval;
 var secondsInterval;
 
+document.addEventListener('DOMContentLoaded', init, false);
+
+function init(){
+  document.getElementById('reset').addEventListener('click', reset, true);
+  document.getElementById('start').addEventListener('click', startTimer, true);
+};
+
 function minutesTimer() {
     if (minutes != 0){
         minutes = minutes - 1;
@@ -101,3 +108,4 @@ function startTimer(){
         alternate();
     }
 }
+
