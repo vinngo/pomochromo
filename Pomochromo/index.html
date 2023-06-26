@@ -9,6 +9,8 @@
         margin: auto;
         background-color: rgb(139, 187, 151);
         border-radius: 5px;
+        padding-top: 12px;
+        padding-bottom: 12px;
       }
 
       body {
@@ -38,11 +40,11 @@
         border-radius: 5px;
         font-family: Lucida, sans-serif;
         font-weight: bold;
-        background-color: transparent;
+        background-color: rgb(131, 181, 144);
         color: rgb(255, 255, 255);
         border: none;
         font-size: 12px;
-        padding-top: 20px;
+        margin: 1px;
       }
 
       h1 {
@@ -51,7 +53,7 @@
       }
 
       #label {
-        padding-top: 20px;
+        padding-top: 5px;
       }
 
       #timer {
@@ -69,12 +71,12 @@
   <!--<button class="button1" onclick="location.href='https://www.youtube.com/watch?v=JnGSFHazTkg'">Blocked Websites</button>-->
   <body>
     <div id="timer-container">
-      <button class="option" id="pomodoro">Pomodoro</button>
-      <button class="option" id="short_break">Short Break</button>
-      <button class="option" id="long_break">Long Break</button>
       <h2 style="color: #ffffff" id="label">Time to Work!</h2>
       <div style="color: #ffffff" id="timer">25:00</div>
     </div>
+    <button class = "option" id="Pomodoro">Pomodoro</button>
+    <button class = "option" id="ShortBreak">Short Break</button>
+    <button class = "option" id="LongBreak">Long Break</button>
     <div id="controls">
       <button class="button1" id="start">Start</button>
       <button class="button1" id="reset">Reset</button>
