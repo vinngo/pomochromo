@@ -1,78 +1,270 @@
 /* CSS styling for the timer */
-#timer-container {
-width: 300px;
-margin: auto;
-background-color: rgb(139, 187, 151);
-border-radius: 5px;
-padding-top: 12px;
-padding-bottom: 12px;
-}
+html {
+    height: 100%;
+    width: 100%;
+  }
+  
+  #timer-container {
+    font-size: 10px;
+    width: 250px;
+    margin: auto;
+    background-color: rgb(139, 187, 151);
+    border-radius: 5px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  
+  #timer {
+    margin-top: 50px;
+  }
+  
 
-body {
-font-family: Lucida, sans-serif;
-text-align: center;
-margin-top: 100px;
-}
-
-body {
-background-color: rgb(115, 165, 128);
-}
-
-.button1 {
-border-radius: 5px;
-background-color: #fffaeb;
-font-family: Lucida, sans-serif;
-font-weight: bold;
-border: none;
-color: rgb(115, 165, 128);
-box-shadow: 0px 6px 0px #bfbbaf;
-font-size: 24px;
-padding: 10px 20px;
-margin: 0 10px;
-}
-
-.button1:active {
-transform: translateY(6px);
-box-shadow: none;
-}
-
-.option {
-border-radius: 5px;
-font-family: Lucida, sans-serif;
-font-weight: bold;
-background-color: rgb(131, 181, 144);
-color: rgb(255, 255, 255);
-border: none;
-font-size: 12px;
-margin: 1px;
-}
-
-h1 {
-font-family: Lucida, sans-serif;
-font-size: 48px;
-}
-
-#label {
-padding-top: 5px;
-}
-
-#timer {
-font-size: 80px;
-margin-top: 1px;
-font-weight: bold;
-}
-
-#controls {
-margin-top: 40px;
-}
-
-#start {
-width: 150px 
-}
-
-.changebutton {
+  body {
+    font-family: Lucida, sans-serif;
+    text-align: center;
+    padding-top: 100px;
+  }
+  
+  body {
+    background-color: rgb(115, 165, 128);
+  }
+  
+  button {
+    cursor: pointer;
+  }
+  
+  #homebutton {
+    position: absolute;
+    top: 10px;
+    left: 1px;
+  }
+  
+  .tab {
+    position: absolute;
+    top: 10px;
+    right: 1px;
+  }
+  
+  .button1 {
+    border-radius: 5px;
+    background-color: #fffaeb;
+    font-family: Lucida, sans-serif;
+    font-weight: bold;
+    border: none;
+    color: rgb(115, 165, 128);
+    box-shadow: 0px 3px 0px #bfbbaf;
+    font-size: 12x;
+    padding: 5px 10px;
+    margin: 0 10px;
+  }
+  
+  .button1:active {
+    transform: translateY(3px);
+    box-shadow: none;
+  }
+  
+  .option {
+    border-radius: 5px;
+    font-family: Lucida, sans-serif;
+    font-weight: bold;
+    background-color: rgb(131, 181, 144);
+    color: rgb(255, 255, 255);
+    border: none;
+    font-size: 12px;
+    margin: 1px;
+  }
+  
+  h1 {
+    font-family: Lucida, sans-serif;
+    font-size: 48px;
+  }
+  
+  #label {
+    padding-top: 5px;
+  }
+  
+  #timer {
+    font-size: 60px;
+    margin-top: 1px;
+    font-weight: bold;
+  }
+  
+  #controls {
+    margin-top: 40px;
+  }
+  
+  #start {
+    width: 70px
+  }
+  
+  .changebutton {
     background-color: transparent;
     border: none;
     width: 50px;
     height: 50px;
-}
+  }
+  
+  .container {
+    width: 40%;
+    top: 50%;
+    left: 50%;
+    background: #fffaeb;
+    border-radius: 10px;
+    min-width: 450px;
+    position: absolute;
+    min-height: 100px;
+    transform: translate(-50%, -50%);
+  }
+  
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  
+  /* CSS Styling for the Tasklist*/
+  
+  #To-Do-List-container {
+    width: 300px;
+    height: 400px;
+    margin: auto;
+    background-color: rgb(139, 187, 151);
+    border-radius: 5px;
+  }
+  
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+  
+  *,
+  *:before,
+  *:after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  .container {
+    width: 40%;
+    top: 50%;
+    left: 50%;
+    background: #fffaeb;
+    border-radius: 10px;
+    min-width: 450px;
+    position: absolute;
+    min-height: 100px;
+    transform: translate(-50%, -50%);
+  }
+  
+  #newtask {
+    position: relative;
+    padding: 30px 20px;
+    cursor: pointer;
+  }
+  
+  #newtask input {
+    width: 75%;
+    height: 45px;
+    padding: 12px;
+    color: #3E363F;
+    font-weight: 500;
+    position: relative;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+  }
+  
+  
+  #tasks {
+    border-radius: 10px;
+    width: 100%;
+    position: relative;
+    padding: 5px 5px;
+    margin-top: 5px;
+  }
+  
+  .task {
+    border-radius: 5px;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    height: 50px;
+    margin-bottom: 8px;
+    padding: 5px 10px;
+    display: flex;
+  }
+  
+  .task span {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  .window {
+    height: 400px;
+    width: 350px;
+  }
+  
+  .slider {
+    appearance: none;
+    background: #fffaeb;
+    border-radius: 7px;
+  }
+  
+  /*color: rgb(115, 165, 128);*/
+
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: rgb(139, 187, 151);
+    border-radius: 50px;
+    cursor: pointer;
+  }
+
+  /*typewriter effect in the home page*/
+  .typewriter h1 {
+    font-size: 30px;
+    display: inline-block;
+    overflow: hidden;
+    /* Ensures the content is not revealed until the animation */
+    border-right: .15em solid #fffaeb;
+    /* The typwriter cursor */
+    white-space: nowrap;
+    /* Keeps the content on a single line */
+    margin: 0 auto;
+    /* Gives that scrolling effect as the typing happens */
+    letter-spacing: .15em;
+    /* Adjust as needed */
+    animation:
+      typing 3.5s steps(60, end),
+      blink-caret .75s step-end infinite;
+  }
+  
+  /* The typing effect */
+  @keyframes typing {
+    from {
+      max-width: 0
+    }
+  
+    to {
+      max-width: 100%
+    }
+  }
+  
+  /* The typewriter cursor effect */
+  @keyframes blink-caret {
+  
+    from,
+    to {
+      border-color: transparent
+    }
+  
+    50% {
+      border-color: #fffaeb;
+    }
+  }

@@ -1,23 +1,107 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Focus Timer</title>
+    <title>Pomochromo</title>
     <link rel="stylesheet" href="index.css"/>
     <script src="script.js"></script>
     <link rel="icon" href="images/popcat.png"/>
-  </head>
-  <!--<button class="button1" onclick="location.href='https://www.youtube.com/watch?v=JnGSFHazTkg'">Blocked Websites</button>-->
-  <body>
-    <div id="timer-container">
-      <h2 style="color: #ffffff" id="label">Time to Work!</h2>
-      <div style="color: #ffffff" id="timer">25:00</div>
+    
+    <button class="changebutton" id = "homebutton">
+      <span class="button-icon">
+        <img class = "icon" src = "images/home.png"/>
+      </span>
+    </button>
+
+    <div class="tab">
+      
+  
+      <button class="changebutton" id = "shield">
+        <span class="button-icon">
+          <img class = "icon" src = "images/shield.png"/>
+        </span>
+      </button>
+  
+      <button class="changebutton" id = "time">
+        <span class="button-icon">
+          <img class = "icon" src = "images/time.png"/>
+        </span>
+      </button>
+  
+      <button class="changebutton" id = "tasklist">
+        <span class="button-icon">
+          <img class = "icon" src = "images/clipboard.png"/>
+        </span>
+      </button>
+      <button class="changebutton" id = "settings">
+        <span class="button-icon">
+          <img class = "icon" src = "images/gear.png"/>
+        </span>
+      </button>
     </div>
-    <button class = "option" id="Pomodoro">Pomodoro</button>
-    <button class = "option" id="ShortBreak">Short Break</button>
-    <button class = "option" id="LongBreak">Long Break</button>
-    <div id="controls">
-      <button class="button1" id="start">Start</button>
-      <button class="button1" id="reset">Reset</button>
+  </head>
+  <body>
+    <div id="Home" class="window">
+      <img src="images/PEEPEEPOOPOO.png" alt=">:3" class="center">
+  
+      <head>
+        <div class="typewriter">
+          <h1> PomoChromo <3 </h1>
+        </div>
+      </head>
+  
+    </div>
+    <div id = "Timer" class = "window" style="display:none">
+      <div id="timer-container">
+        <h2 style="color: #ffffff" id="label">Time to Work!</h2>
+        <div style="color: #ffffff" id="timer">25:00</div>
+      </div>
+      <button class = "option" id="Pomodoro">Pomodoro</button>
+      <button class = "option" id="ShortBreak">Short Break</button>
+      <button class = "option" id="LongBreak">Long Break</button>
+     <div id="controls">
+       <button class="button1" id="start">Start</button>
+        <button class="button1" id="reset">Reset</button>
+     </div>
+    </div>
+  <div id = "Settings" class = "window" style="display:none">
+
+    <div class="slidecontainer">
+      <p style="color:#ffffff; font-size: 30px"><strong>Work Time</strong>
+        <input type="range" min="20" max="30" value="25" class="slider" id="myRange">
+      </p>
+      <span id="demo" value = "25" style = "color:#ffffff"></span><span style = "color:#ffffff"> minutes</span>
+    </div>
+
+    <div class="slidecontainer" >
+      <p style="color:#ffffff; font-size: 30px"><strong>Short Break</strong>
+        <input type="range" min="3" max="7" value="5" class="slider" id="myRange2">
+      </p>
+      <span id="demo2" value = "5" style = "color:#ffffff"></span><span style = "color:#ffffff"> minutes</span>
+    </div>
+
+    <div class="slidecontainer">
+      <p style="color: #ffffff; font-size: 30px"><strong>Long Break</strong>
+        <input type="range" min="10" max="20" value="15" class="slider" id="myRange3">
+      </p>
+      <span id="demo3" value = "15" style = "color:#ffffff"></span><span style = "color:#ffffff"> minutes</span>
+    </div>
+  </div>
+    <div id="Checklist" class="window" style="display:none">
+      <h1 style="color:#ffffff">To-Do-List</h1>
+           <div id="To-Do-List-container">
+             <div id="newtask">
+               <input style = "border: none; outline: none"type="text" placeholder="Enter Tasks">
+               <span id="push" style = "bottom: 10px">
+                <p style = "bottom:2px">
+                 <button class = "button1" style = "width: 190px; margin-top: 10px;">Add Task</button>
+                </p>
+               </span>
+             </div>
+             <div id="tasks"></div>
+     
+     
+            </div>
     </div>
   </body>
+</div>
 </html>
