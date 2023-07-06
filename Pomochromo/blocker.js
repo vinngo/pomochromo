@@ -1,3 +1,7 @@
+var blockedWebsites = [];
+
+document.addEventListener("click", updateBlocker, true);
+
 const generateSTYLES = () => {
     return `<style>@import url(https://fonts.googleapis.com/css?family=opensans:500);
     body {
@@ -99,6 +103,8 @@ const generateSTYLES = () => {
     </div>
      `;
   };
+
+
 switch (window.location.hostname) {
     case "www.youtube.com":
         document.head.innerHTML = generateSTYLES();
@@ -115,6 +121,10 @@ switch (window.location.hostname) {
      case "www.netflix.com":
         document.head.innerHTML = generateSTYLES();
         document.body.innerHTML = generateHTML("YOUTUBE");
-            break;
+        break;
    
-}
+};
+
+function updateBlocker(){
+  blockedWebsites.push("www.netflix.com");
+};

@@ -7,7 +7,7 @@
     "action":{
       "default_popup": "index.html",
       "default_title": "Pomochromo",
-      "default_icon": "images/popcat.png"
+      "default_icon": "images/PROMOCHOROMO.png"
     },
    
   "content_scripts": [
@@ -22,7 +22,7 @@
   ],
 
   "background": {
-    "serivce-worker": "script.js"
+    "service_worker": "background.js"
   }
 
 }

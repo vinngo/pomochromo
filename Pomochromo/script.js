@@ -1,18 +1,25 @@
-'use strict';
+var minutes = 26;
 var seconds = 0;
-var minutes = 25;
 var interval;
 const loop = ["work", "break", "work", "break", "work", "longbreak"];
 var reps = 0;
-var minutesInterval;
 var secondsInterval;
+var curAction;
+var breakTime = 5;
+var workTime = 25;
+var longBreakTime = 15;
 
 document.addEventListener("DOMContentLoaded", init, false);
+document.addEventListener("DOMContentLoaded", getValues, false);
+document.addEventListener("blur", function(){
+  chrome.runtime.sendMessage("exit");
+  console.log("FUCKKKKK");
+}, false);
 
 function init() {
-  document.getElementById("demo").value = 25;
-  document.getElementById("demo2").value = 5;
-  document.getElementById("demo3").value = 15;
+  chrome.action.setBadgeBackgroundColor(  
+  {color: '#73a580'}, 
+  () => { /* ... */ },)
   document.getElementById("reset").addEventListener("click", reset, true);
   document.getElementById("start").addEventListener("click", startTimer, true);
   document.getElementById("Pomodoro").addEventListener("click", switchModePomodoro, true);
@@ -30,96 +37,93 @@ function init() {
 };
 
 function switchModePomodoro() {
-    clearInterval(minutesInterval);
     clearInterval(secondsInterval);
     if (loop[reps] === "work") {
-        minutes = 25;
+        minutes = workTime;
         seconds = 0;
     } else if (loop[reps] === "break") {
         reps = 0;
-        minutes = 25;
+        minutes = workTime;
         seconds = 0;
     } else {
         reps = 0;
-        minutes = 25;
+        minutes = workTime;
         seconds = 0;
     }
     document.getElementById("timer").textContent = minutes + ":" + "0" + seconds;
     document.getElementById("start").textContent = "Start";
     document.getElementById("label").textContent = "Time to Work!";
+    curAction = document.getElementById("start").textContent;
+    chrome.storage.local.set({'minutes': minutes, 'seconds': seconds, 'reps': reps, 'curAction': curAction});
 }
 
 function switchModeBreak() {
-    clearInterval(minutesInterval);
     clearInterval(secondsInterval);
     if (loop[reps] === "work"){
         reps = 1;
-        minutes = "0" + 5;
+        minutes = "0" + breakTime;
         seconds = 0;
     } else if (loop[reps] === "break") {
-        minutes = "0" + 5;
+        minutes = "0" + breakTime;
         seconds = 0;
     } else {
         reps = 1;
-        minutes = "0" + 5;
+        minutes = "0" + breakTime;
         seconds = 0;
     }
     document.getElementById("timer").textContent = minutes + ":" + "0" + seconds;
     document.getElementById("start").textContent = "Start";
-    document.getElementById("label").textContent = "Five Minute Break.";
+    document.getElementById("label").textContent = "Short Break.";
+    curAction = document.getElementById("start").textContent;
+    chrome.storage.local.set({'minutes': minutes, 'seconds': seconds, 'reps': reps, 'curAction': curAction});
 }
 
 function switchModeLong() {
-    clearInterval(minutesInterval);
     clearInterval(secondsInterval);
     if (loop[reps] === "work"){
         reps = 5;
-        minutes = 15;
+        minutes = longBreakTime;
         seconds = 0;
     } else if (loop[reps] === "break") {
         reps = 5;
-        minutes = 15;
+        minutes = longBreakTime;
         seconds = 0;
     } else {
-        minutes = 15;
+        minutes = longBreakTime;
         seconds = 0;
     }
     document.getElementById("timer").textContent = minutes + ":" + "0" + seconds;
     document.getElementById("start").textContent = "Start";
-    document.getElementById("label").textContent = "Fifteen Minute Break.";
+    document.getElementById("label").textContent = "Long Break.";
+    chrome.storage.local.set({'minutes': minutes, 'seconds': seconds, 'reps': reps, 'curAction': curAction});
 }
 
-function minutesTimer() {
-  if (minutes != 0) {
-    minutes = minutes - 1;
-  }
-}
 
 function secondsTimer() {
-  seconds = seconds - 1;
+  seconds -= 1;
+  chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
   document.getElementById("timer").textContent =
     (minutes < 10 ? "0" + minutes : minutes) +
     ":" +
     (seconds < 10 ? "0" + seconds : seconds);
-  chrome.storage.sync.set({'minutes': minutes}, function(){
-  });
-  chrome.storage.sync.set({'seconds': seconds}, function(){
+  chrome.storage.local.set({'minutes': minutes, 'seconds': seconds}, function(){
     console.log(minutes+":"+seconds)
   });
   if (seconds <= 0) {
     if (minutes <= 0) {
-      clearInterval(minutesInterval);
       clearInterval(secondsInterval);
       if (reps == 5) {
         reps = 0;
       } else {
         reps += 1;
       }
+      chrome.storage.local.set({'reps': reps});
       pomodoro();
       pause();
       alternate();
     }
     seconds = 60;
+    minutes -=1;
   }
 }
 
@@ -127,21 +131,18 @@ function pomodoro() {
   //logic to determine pomodoro loop
   if (loop[reps] === "work") {
     document.getElementById("label").textContent = "Get to Work!";
-    minutes = 24;
+    minutes = workTime--;
     seconds = 0;
-    minutesInterval = setInterval(minutesTimer, 60000);
     secondsInterval = setInterval(secondsTimer, 1000);
   } else if (loop[reps] === "break") {
-    document.getElementById("label").textContent = "Five Minute Break.";
-    minutes = 4;
+    document.getElementById("label").textContent = "Short Break.";
+    minutes = breakTime;
     seconds = 0;
-    minutesInterval = setInterval(minutesTimer, 60000);
     secondsInterval = setInterval(secondsTimer, 1000);
   } else {
-    document.getElementById("label").textContent = "Fifteen Minute Break.";
-    minutes = 14;
+    document.getElementById("label").textContent = "Long Break.";
+    minutes = longBreakTime--;
     seconds = 0;
-    minutesInterval = setInterval(minutesTimer, 60000);
     secondsInterval = setInterval(secondsTimer, 1000);
   }
 }
@@ -149,47 +150,38 @@ function pomodoro() {
 function start() {
   minutes -= 1;
   seconds = 59;
-  chrome.storage.sync.set({'minutes' : minutes});
-  chrome.storage.sync.set({'seconds' : seconds});
+  chrome.storage.local.set({'minutes' : minutes, 'seconds': seconds});
   //method to update time on the screen
   document.getElementById("timer").textContent = minutes + ":" + seconds;
 
-  minutesInterval = setInterval(minutesTimer, 60000);
   secondsInterval = setInterval(secondsTimer, 1000);
-  chrome.storage.sync.set({'minutesInterval' : minutesInterval});
-  chrome.storage.sync.set({'secondsInterval' : secondsInterval});
+  chrome.storage.local.set({'secondsInterval' : secondsInterval});
 }
 
 function pause() {
-  clearInterval(minutesInterval);
   clearInterval(secondsInterval);
-  chrome.storage.sync.set({'minutesInterval' : minutesInterval});
-  chrome.storage.sync.set({'minutesInterval' : minutesInterval});
+  chrome.storage.local.set({'secondsInterval' : secondsInterval});
 }
 
 function reset() {
-  clearInterval(minutesInterval);
   clearInterval(secondsInterval);
-  chrome.storage.sync.set({'minutesInterval' : minutesInterval});
-  chrome.storage.sync.set({'minutesInterval' : minutesInterval});
+  chrome.storage.local.set({'secondsInterval' : secondsInterval});
   reps = 0;
-  minutes = 25;
+  minutes = workTime;
   seconds = 0;
-  chrome.storage.sync.set({'reps': reps})
-  chrome.storage.sync.set({'minutes' : minutes});
-  chrome.storage.sync.set({'seconds' : seconds});
   document.getElementById("timer").textContent = minutes + ":" + "0" + seconds;
   document.getElementById("start").textContent = "Start";
   document.getElementById("label").textContent = "Time to Work!";
+  curAction = document.getElementById("start").textContent;
+  chrome.storage.local.set({'reps': reps});
+  chrome.storage.local.set({'minutes' : minutes, 'seconds': seconds});
+  chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
 }
 
 function resume() {
-  minutesInterval = setInterval(minutesTimer, 60000);
   secondsInterval = setInterval(secondsTimer, 1000);
-  chrome.storage.sync.set({minutesInterval:minutesInterval}, function(){
+  chrome.storage.local.set({'secondsInterval':secondsInterval}, function(){
     console.log("timer started");
-  });
-  chrome.storage.sync.set({minutesInterval:minutesInterval}, function(){
   });
 }
 
@@ -199,8 +191,12 @@ function alternate() {
     document.getElementById("start").textContent === "Resume"
   ) {
     document.getElementById("start").textContent = "Pause";
+    curAction = document.getElementById("start").textContent = "Pause";
+    chrome.storage.local.set({"curAction": curAction});
   } else {
     document.getElementById("start").textContent = "Resume";
+    curAction = document.getElementById("start").textContent = "Resume";
+    chrome.storage.local.set({"curAction": curAction});
   }
 }
 
@@ -303,6 +299,9 @@ function effectSlider (){
   output.innerHTML = slider.value;
   output2.innerHTML = slider2.value;
   output3.innerHTML = slider3.value;
+  workTime = slider.value;
+  breakTime = slider2.value;
+  longBreakTime = slider3.value;
 
   slider.oninput = function () {
     output.innerHTML = this.value;
@@ -315,5 +314,60 @@ function effectSlider (){
   slider3.oninput = function () {
     output3.innerHTML = this.value;
   }
+
+  if (loop[reps] === "work"){
+    switchModePomodoro();
+  } else if (loop[reps] === "break"){
+    switchModeBreak();
+  } else {
+    switchModeLong();
+  }
+  chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
+  chrome.storage.local.set({'workTime': workTime, 'breakTime': breakTime, 'longBreakTime': longBreakTime});
 }
+
+//API call to update all the user data when restarting app.
+function getValues() {
+  chrome.storage.local.get(['minutes', 'seconds', 'reps', 'curAction', 'workTime', 'breakTime', 'longBreakTime'], function(data){
+    if (data.minutes != undefined) {
+      minutes = data.minutes;
+      seconds = data.seconds;
+      reps = data.reps;
+      curAction = data.curAction;
+      workTime = data.workTime;
+      breakTime = data.breakTime;
+      longBreakTime = data.longBreakTime;
+
+      if (minutes == 26){
+        minutes -= 2;
+      }
+
+      if (curAction === "Start"){
+        console.log("last recorded status: start");
+        document.getElementById("start").textContent = "Start";
+      } else if (curAction === "Pause"){
+        console.log("last recorded status: pause");
+        document.getElementById("start").textContent = "Resume";
+      } else if (curAction === "Resume"){
+        console.log("last recorded status: resume");
+        document.getElementById("start").textContent = "Resume";
+      }
+
+      if (loop[reps] === "work"){
+        document.getElementById("label").textContent = "Time to Work!";
+      } else if (loop[reps] === "break"){
+        document.getElementById("label").textContent = "Short Break."
+      } else {
+        document.getElementById("label").textContent = "Long Break.";
+      }
+
+      document.getElementById("myRange").value = workTime;
+      document.getElementById("myRange2").value = breakTime;
+      document.getElementById("myRange3").value = longBreakTime;
+
+      document.getElementById("timer").textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+      document.getElementById("start").textContent = curAction;
+    }
+  });
+};
 
