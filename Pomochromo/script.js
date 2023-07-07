@@ -8,18 +8,26 @@ var curAction;
 var breakTime = 5;
 var workTime = 25;
 var longBreakTime = 15;
+var visible = false;
+var blockedWebsites = [];
 
 document.addEventListener("DOMContentLoaded", init, false);
 document.addEventListener("DOMContentLoaded", getValues, false);
-document.addEventListener("blur", function(){
-  chrome.runtime.sendMessage("exit");
-  console.log("FUCKKKKK");
-}, false);
+document.addEventListener("DOMContentLoaded", function(){
+  visible = true;
+  chrome.storage.local.set({"visible": visible});
+}, false)
+document.onclose = function(){
+  visible = false;
+  chrome.storage.local.set({'visible': visible});
+};
+
+
 
 function init() {
   chrome.action.setBadgeBackgroundColor(  
   {color: '#73a580'}, 
-  () => { /* ... */ },)
+  () => { /* ... */ },);
   document.getElementById("reset").addEventListener("click", reset, true);
   document.getElementById("start").addEventListener("click", startTimer, true);
   document.getElementById("Pomodoro").addEventListener("click", switchModePomodoro, true);
@@ -34,6 +42,7 @@ function init() {
   document.getElementById("myRange").addEventListener("mouseup", effectSlider, true);
   document.getElementById("myRange2").addEventListener("mouseup", effectSlider, true);
   document.getElementById("myRange3").addEventListener("mouseup", effectSlider, true);
+  document.getElementById("effectBlocker").addEventListener("click", effectBlocker, true);
 };
 
 function switchModePomodoro() {
@@ -101,13 +110,13 @@ function switchModeLong() {
 
 function secondsTimer() {
   seconds -= 1;
-  chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
+  //chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
   document.getElementById("timer").textContent =
     (minutes < 10 ? "0" + minutes : minutes) +
     ":" +
     (seconds < 10 ? "0" + seconds : seconds);
-  chrome.storage.local.set({'minutes': minutes, 'seconds': seconds}, function(){
-    console.log(minutes+":"+seconds)
+  chrome.storage.local.set({'minutes': minutes, 'seconds': seconds, 'curAction': curAction}, function(){
+    console.log(minutes+":"+seconds);
   });
   if (seconds <= 0) {
     if (minutes <= 0) {
@@ -172,7 +181,8 @@ function reset() {
   document.getElementById("timer").textContent = minutes + ":" + "0" + seconds;
   document.getElementById("start").textContent = "Start";
   document.getElementById("label").textContent = "Time to Work!";
-  curAction = document.getElementById("start").textContent;
+  curAction = document.getElementById("start").textContent = "Start";
+  chrome.storage.local.set({"curAction": curAction});
   chrome.storage.local.set({'reps': reps});
   chrome.storage.local.set({'minutes' : minutes, 'seconds': seconds});
   chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
@@ -268,7 +278,7 @@ function effectTask() {
 
     else {
       document.querySelector('#tasks').innerHTML += ` 
-          <div class="task">
+          <div class="task" style = "background-color: rgb(161, 212, 174); border-radius: 5px; color: rgb(86, 122, 95)">
               <span id="taskname">
                   ${document.querySelector('#newtask input').value}
               </span>
@@ -326,9 +336,57 @@ function effectSlider (){
   chrome.storage.local.set({'workTime': workTime, 'breakTime': breakTime, 'longBreakTime': longBreakTime});
 }
 
+function effectBlocker() {
+  var input = document.getElementById("url").value;
+  if (input.length == 0) {
+    alert("Put something in dumbass!")
+  }
+  else if (input.substring(0, 4) != "www.") {
+    alert("Put a valid link in that starts with 'www.'")
+  } else {
+    blockedWebsites.push(input);
+    var websiteList = document.getElementById("website-ul");
+    var li = document.createElement("li");
+    var text = document.createTextNode(input);
+    li.appendChild(text);
+    var deleteImage = document.createElement("img");
+    deleteImage.src = "images/close-circle.png";
+    deleteImage.style.width = "20px";
+    deleteImage.onclick = function() {
+      li.parentNode.removeChild(li);
+      blockedWebsites = blockedWebsites.splice(li, 1);
+      chrome.storage.local.set({"blockedWebsites": blockedWebsites});
+    };
+    li.appendChild(deleteImage);
+    websiteList.appendChild(li);
+    document.getElementById("url").value = "";
+    chrome.storage.local.set({"blockedWebsites": blockedWebsites});
+  }
+}
+/*
+function change() { // Define the list of blocked websites
+
+  var currentHostname = window.location.hostname;
+
+  // Get the current website's hostname
+
+  // Check if the current website's hostname is in the blockedWebsites array
+  if (blocky.includes(currentHostname)) {
+    // Redirect or block the website (e.g., show a custom page or display an error message)
+    // Example: window.location.href = "blocked.html";
+
+    // Alternatively, you can modify the page content to display a custom message
+    document.head.innerHTML = generateSTYLES();
+    document.body.innerHTML = generateHTML("YOUTUBE");
+  }
+}
+
+setInterval(change, 2000);
+*/
+
 //API call to update all the user data when restarting app.
 function getValues() {
-  chrome.storage.local.get(['minutes', 'seconds', 'reps', 'curAction', 'workTime', 'breakTime', 'longBreakTime'], function(data){
+  chrome.storage.local.get(['minutes', 'seconds', 'reps', 'curAction', 'workTime', 'breakTime', 'longBreakTime', 'blockedWebsites'], function(data){
     if (data.minutes != undefined) {
       minutes = data.minutes;
       seconds = data.seconds;
@@ -347,7 +405,8 @@ function getValues() {
         document.getElementById("start").textContent = "Start";
       } else if (curAction === "Pause"){
         console.log("last recorded status: pause");
-        document.getElementById("start").textContent = "Resume";
+        document.getElementById("start").textContent = "Pause";
+        secondsInterval = setInterval(secondsTimer, 1000);
       } else if (curAction === "Resume"){
         console.log("last recorded status: resume");
         document.getElementById("start").textContent = "Resume";
@@ -364,6 +423,10 @@ function getValues() {
       document.getElementById("myRange").value = workTime;
       document.getElementById("myRange2").value = breakTime;
       document.getElementById("myRange3").value = longBreakTime;
+      document.getElementById("demo").value = workTime;
+      document.getElementById("demo2").value = breakTime;
+      document.getElementById("demo3").value = longBreakTime;
+
 
       document.getElementById("timer").textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
       document.getElementById("start").textContent = curAction;

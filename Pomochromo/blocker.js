@@ -1,6 +1,11 @@
-var blockedWebsites = [];
-
-document.addEventListener("click", updateBlocker, true);
+//CSS for error thrown after clicking on blocked website
+var blockedWebsitesList;
+setInterval(updateBlocker, 500);
+setInterval(function(){
+  for(let i = 0; i < blockedWebsitesList.length; i++){
+    console.log(blockedWebsitesList[i]);
+  }
+}, 3000);
 
 const generateSTYLES = () => {
     return `<style>@import url(https://fonts.googleapis.com/css?family=opensans:500);
@@ -104,7 +109,7 @@ const generateSTYLES = () => {
      `;
   };
 
-
+/*
 switch (window.location.hostname) {
     case "www.youtube.com":
         document.head.innerHTML = generateSTYLES();
@@ -124,7 +129,18 @@ switch (window.location.hostname) {
         break;
    
 };
+*/
 
 function updateBlocker(){
-  blockedWebsites.push("www.netflix.com");
+  chrome.storage.local.get('blockedWebsites', function(data){
+    blockedWebsitesList = data.blockedWebsites;
+    for (let i = 0; i < blockedWebsitesList.length; i++){
+      if (window.location.hostname === blockedWebsitesList[i]){
+        document.head.innerHTML = generateSTYLES();
+        document.body.innerHTML = generateHTML("YOUTUBE");
+      }
+    }
+    
+  });
+
 };
