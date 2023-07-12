@@ -10,6 +10,8 @@ var workTime = 25;
 var longBreakTime = 15;
 var visible = false;
 var blockedWebsites = [];
+var taskList = [];
+
 
 document.addEventListener("DOMContentLoaded", init, false);
 document.addEventListener("DOMContentLoaded", getValues, false);
@@ -25,9 +27,6 @@ document.onclose = function(){
 
 
 function init() {
-  chrome.action.setBadgeBackgroundColor(  
-  {color: '#73a580'}, 
-  () => { /* ... */ },);
   document.getElementById("reset").addEventListener("click", reset, true);
   document.getElementById("start").addEventListener("click", startTimer, true);
   document.getElementById("Pomodoro").addEventListener("click", switchModePomodoro, true);
@@ -109,15 +108,17 @@ function switchModeLong() {
 
 
 function secondsTimer() {
-  seconds -= 1;
+  if (seconds == 0){
+
+  } else {
+    seconds -= 1;
+  }
   //chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
   document.getElementById("timer").textContent =
     (minutes < 10 ? "0" + minutes : minutes) +
     ":" +
     (seconds < 10 ? "0" + seconds : seconds);
-  chrome.storage.local.set({'minutes': minutes, 'seconds': seconds, 'curAction': curAction}, function(){
-    console.log(minutes+":"+seconds);
-  });
+  chrome.storage.local.set({'minutes': minutes, 'seconds': seconds, 'curAction': curAction});
   if (seconds <= 0) {
     if (minutes <= 0) {
       clearInterval(secondsInterval);
@@ -128,8 +129,6 @@ function secondsTimer() {
       }
       chrome.storage.local.set({'reps': reps});
       pomodoro();
-      pause();
-      alternate();
     }
     seconds = 60;
     minutes -=1;
@@ -185,7 +184,6 @@ function reset() {
   chrome.storage.local.set({"curAction": curAction});
   chrome.storage.local.set({'reps': reps});
   chrome.storage.local.set({'minutes' : minutes, 'seconds': seconds});
-  chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
 }
 
 function resume() {
@@ -201,12 +199,16 @@ function alternate() {
     document.getElementById("start").textContent === "Resume"
   ) {
     document.getElementById("start").textContent = "Pause";
-    curAction = document.getElementById("start").textContent = "Pause";
-    chrome.storage.local.set({"curAction": curAction});
+    curAction = "Pause";
+    chrome.storage.local.set({"curAction": curAction}, function(){
+      console.log("set curAction to " + curAction);
+    });
   } else {
     document.getElementById("start").textContent = "Resume";
-    curAction = document.getElementById("start").textContent = "Resume";
-    chrome.storage.local.set({"curAction": curAction});
+    curAction = "Resume";
+    chrome.storage.local.set({"curAction": curAction}, function(){
+      console.log("set curAction to " + curAction);
+    });
   }
 }
 
@@ -277,6 +279,8 @@ function effectTask() {
     }
 
     else {
+      taskList.push(document.querySelector('#newtask input').value);
+      chrome.storage.local.set({"taskList" : taskList});
       document.querySelector('#tasks').innerHTML += ` 
           <div class="task" style = "background-color: rgb(161, 212, 174); border-radius: 5px; color: rgb(86, 122, 95)">
               <span id="taskname">
@@ -288,12 +292,16 @@ function effectTask() {
           </div>
       `;
 
+
       var current_tasks = document.querySelectorAll(".delete");
       for (var i = 0; i < current_tasks.length; i++) {
         current_tasks[i].onclick = function () {
           this.parentNode.remove();
+          taskList.splice(i);
+          chrome.storage.local.set({"taskList" : taskList});
         }
       }
+
     }
   }
 }
@@ -332,18 +340,17 @@ function effectSlider (){
   } else {
     switchModeLong();
   }
-  chrome.action.setBadgeText({ text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
   chrome.storage.local.set({'workTime': workTime, 'breakTime': breakTime, 'longBreakTime': longBreakTime});
 }
 
 function effectBlocker() {
   var input = document.getElementById("url").value;
   if (input.length == 0) {
-    alert("Put something in dumbass!")
-  }
-  else if (input.substring(0, 4) != "www.") {
-    alert("Put a valid link in that starts with 'www.'")
+    
   } else {
+    if (input.substring(0, 4) != "www.") {
+      input = "www." + input;
+    }
     blockedWebsites.push(input);
     var websiteList = document.getElementById("website-ul");
     var li = document.createElement("li");
@@ -386,19 +393,35 @@ setInterval(change, 2000);
 
 //API call to update all the user data when restarting app.
 function getValues() {
-  chrome.storage.local.get(['minutes', 'seconds', 'reps', 'curAction', 'workTime', 'breakTime', 'longBreakTime', 'blockedWebsites'], function(data){
-    if (data.minutes != undefined) {
-      minutes = data.minutes;
-      seconds = data.seconds;
-      reps = data.reps;
-      curAction = data.curAction;
-      workTime = data.workTime;
-      breakTime = data.breakTime;
-      longBreakTime = data.longBreakTime;
-
-      if (minutes == 26){
-        minutes -= 2;
+  chrome.storage.local.get(['minutes', 'seconds', 'reps', 'curAction', 'workTime', 'breakTime', 'longBreakTime', 'blockedWebsites', 'taskList'], function(data){
+      if (data.minutes != undefined){
+        minutes = data.minutes;
+      } 
+      if (data.seconds != undefined){
+        seconds = data.seconds;
       }
+      if (data.reps != undefined){
+        reps = data.reps;
+      }   
+      if (data.curAction != undefined){
+        curAction = data.curAction;
+      }
+      if (data.workTime != undefined){
+        workTime = data.workTime;
+      }
+      if (data.breakTime != undefined){
+        breakTime = data.breakTime 
+      }
+      if (data.longBreakTime != undefined){
+        longBreakTime = data.longBreakTime;
+      }
+      if (data.blockedWebsites != undefined){
+        blockedWebsites = data.blockedWebsites;
+      }
+      if (data.taskList != undefined){
+        taskList = data.taskList;
+      } 
+      console.log(taskList);
 
       if (curAction === "Start"){
         console.log("last recorded status: start");
@@ -406,6 +429,7 @@ function getValues() {
       } else if (curAction === "Pause"){
         console.log("last recorded status: pause");
         document.getElementById("start").textContent = "Pause";
+        console.log("timer resumed");
         secondsInterval = setInterval(secondsTimer, 1000);
       } else if (curAction === "Resume"){
         console.log("last recorded status: resume");
@@ -423,14 +447,59 @@ function getValues() {
       document.getElementById("myRange").value = workTime;
       document.getElementById("myRange2").value = breakTime;
       document.getElementById("myRange3").value = longBreakTime;
-      document.getElementById("demo").value = workTime;
-      document.getElementById("demo2").value = breakTime;
-      document.getElementById("demo3").value = longBreakTime;
+      document.getElementById("demo").innerHTML = workTime;
+      document.getElementById("demo2").innerHTML = breakTime;
+      document.getElementById("demo3").innerHTML = longBreakTime;
 
+      if (taskList !== undefined){
+      //code for refreshing tasks
+        for (let i = 0; i < taskList.length; i++){
+          document.querySelector('#tasks').innerHTML += ` 
+          <div class="task" style = "background-color: rgb(161, 212, 174); border-radius: 5px; color: rgb(86, 122, 95)">
+              <span id="taskname">
+                 ${taskList[i]}
+              </span>
+              <span class="delete"> 
+                <img style = "height: 40px; width: 40px" src = "images/close-circle.png">
+             </span>
+          </div>
+        `;
+        }
+
+        var current_tasks = document.querySelectorAll(".delete");
+        for (let i = 0; i < current_tasks.length; i++) {
+          current_tasks[i].onclick = function () {
+            this.parentNode.remove();
+            taskList.splice(i,1);
+            chrome.storage.local.set({"taskList" : taskList});
+            console.log(taskList);
+          }
+        }
+      } else {
+        console.log("list is undefined!");
+      }
+
+      for (var i = 0; i < blockedWebsites.length; i++){
+        var input = document.createElement("text");
+        var websiteList = document.getElementById("website-ul");
+        var li = document.createElement("li");
+        input.innerHTML = blockedWebsites[i];
+        li.appendChild(input);
+        var deleteImage = document.createElement("img");
+        deleteImage.src = "images/close-circle.png";
+        deleteImage.style.width = "20px";
+        deleteImage.onclick = function() {
+          li.parentNode.removeChild(li);
+          blockedWebsites = blockedWebsites.splice(i);
+          chrome.storage.local.set({"blockedWebsites": blockedWebsites});
+        };
+        li.appendChild(deleteImage);
+        websiteList.appendChild(li);
+        document.getElementById("url").value = "";
+      }
 
       document.getElementById("timer").textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
       document.getElementById("start").textContent = curAction;
-    }
   });
 };
 
