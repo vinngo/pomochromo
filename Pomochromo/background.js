@@ -32,32 +32,8 @@ chrome.alarms.onAlarm.addListener(alarm => {
               } else {
               reps += 1;
               }
-              if (loop[reps] === "work"){
-                  chrome.notifications.create(
-                      "work",
-                       {
-                        type: "basic",
-                        iconUrl: "images/PEEPEEPOOPOO.png",
-                        title: 'Period Over',
-                        message: 'Get to Work!'
-                        }
-                    );
-                    chrome.notifications.clear("work");
-              } else {
-                    chrome.notifications.create(
-                        "break",
-                        {
-                          type: "basic",
-                          iconUrl: "images/PEEPEEPOOPOO.png",
-                          title: 'Period Over',
-                          message: 'Take a rest!'
-                        }
-                      );
-                    chrome.notifications.clear("break");
-                    chrome.notifications.clear("work");
-                }
-                chrome.storage.local.set({'reps': reps});
-                pomodoro();
+              chrome.storage.local.set({'reps': reps});
+              pomodoro();
             } else {
               seconds = 59;
               minutes -= 1;  
