@@ -40,6 +40,7 @@ chrome.alarms.onAlarm.addListener(alarm => {
             }
         } else {
           seconds -= 2;
+          chrome.action.setBadgeText({text: (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds)});
         }
         chrome.storage.local.set({'minutes': minutes, 'seconds': seconds}, function(){
         console.log(minutes+":"+seconds);

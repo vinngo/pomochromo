@@ -11,8 +11,10 @@ var longBreakTime = 15;
 var visible = false;
 var blockedWebsites = [];
 var taskList = [];
+var savedWebsitesList = [];
 
 
+chrome.action.setBadgeBackgroundColor({color: "rgb(139, 187, 151)"});
 document.addEventListener("DOMContentLoaded", init, false);
 document.addEventListener("DOMContentLoaded", getValues, false);
 document.addEventListener("DOMContentLoaded", function(){
@@ -23,25 +25,6 @@ document.onclose = function(){
   visible = false;
   chrome.storage.local.set({'visible': visible});
 };
-/*
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
- if (message === "timer finished"){
-  if(loop[reps] === "work"){
-    chrome.notifications.create("work", {
-      type: 'basic',
-      title: 'Work Period is Over',
-      message: 'Open the timer to start your break!'
-    });
-  } else {
-    chrome.notifications.create("break", {
-      type: 'basic',
-      title: 'Break Period is Over',
-      message: 'Open the timer to start your work period!'
-    });
-  }
- }
-}); 
-*/
 
 function init() {
   document.getElementById("reset").addEventListener("click", reset, true);
@@ -58,7 +41,7 @@ function init() {
   document.getElementById("myRange").addEventListener("mouseup", effectSlider, true);
   document.getElementById("myRange2").addEventListener("mouseup", effectSlider, true);
   document.getElementById("myRange3").addEventListener("mouseup", effectSlider, true);
-  document.getElementById("effectBlocker").addEventListener("click", effectBlocker, true);
+  document.getElementById("effectBlocker").addEventListener("click", addWebsite, true);
 };
 
 function switchModePomodoro() {
@@ -288,45 +271,6 @@ function openBlocker() {
   document.getElementById("Blocker").style.display = "block";
 }
 
-/*
-//method for entering tasks
-function effectTask() {
-  document.querySelector('#push').onclick = function () {
-    if (document.querySelector('#newtask input').value.length == 0) {
-      alert("Please enter a task.");
-    }
-
-    else {
-      taskList.push(document.querySelector('#newtask input').value);
-      console.log(taskList);
-      chrome.storage.local.set({"taskList" : taskList});
-      document.querySelector('#tasks').innerHTML += ` 
-          <div class="task" style = "background-color: rgb(161, 212, 174); border-radius: 5px; color: rgb(86, 122, 95)">
-              <span id="taskname">
-                  ${document.querySelector('#newtask input').value}
-              </span>
-              <span class="delete"> 
-                <img style = "height: 40px; width: 40px" src = "images/close-circle.png">
-              </span>
-          </div>
-      `;
-
-
-      var current_tasks = document.querySelectorAll(".delete");
-      for (var i = 0; i < current_tasks.length; i++) {
-        current_tasks[i].onclick = function () {
-          this.parentNode.remove();
-          taskList.splice(i,1);
-          console.log(taskList);
-          chrome.storage.local.set({"taskList" : taskList});
-        }
-      }
-      document.querySelector('#newtask input').value = "";
-
-    }
-  }
-}
-*/
 
 const updateView = () => {
 
@@ -344,8 +288,8 @@ const updateView = () => {
       newTask.setAttribute("class", "task-div");
 
       const taskText = document.createElement("div");
-      taskText.setAttribute("class", Element.isDone ? "task-text task-completed" : "task-text");
-      taskText.innerHTML = (index + 1) + ". " + Element.task;
+      taskText.setAttribute("class", "task-text");
+      taskText.innerHTML = Element.task;
 
       const taskControls = document.createElement("div");
       taskControls.setAttribute("class", "task-controls");
@@ -353,7 +297,7 @@ const updateView = () => {
       const taskDelete = document.createElement("button");
       taskDelete.innerHTML = "Delete";
       taskDelete.setAttribute("id", index + "delete");
-      taskDelete.setAttribute("class", "task-btn task-btn-delete");
+      taskDelete.setAttribute("class", "button2");
       taskDelete.addEventListener("click", (event) => deleteTask(event.target.id));
 
       taskControls.appendChild(taskDelete);
@@ -373,7 +317,7 @@ const addTask = () => {
   localStorage.setItem("savedTasks", JSON.stringify(taskList));
   updateView();
 
-  const taskInput = document.getElementById("task-input");
+  const taskInput = document.getElementById("taskinput");
   taskInput.value = "";
 }
 
@@ -422,57 +366,76 @@ function effectSlider (){
   chrome.storage.local.set({'workTime': workTime, 'breakTime': breakTime, 'longBreakTime': longBreakTime});
 }
 
-function effectBlocker() {
-  var input = document.getElementById("url").value;
-  if (input.length == 0) {
-    
-  } else {
-    if (input.substring(0, 4) != "www.") {
-      input = "www." + input;
-    }
-    blockedWebsites.push(input);
-    var websiteList = document.getElementById("website-ul");
-    var li = document.createElement("li");
-    var text = document.createTextNode(input);
-    li.appendChild(text);
-    var deleteImage = document.createElement("img");
-    deleteImage.src = "images/close-circle.png";
-    deleteImage.style.width = "20px";
-    deleteImage.onclick = function() {
-      li.parentNode.removeChild(li);
-      blockedWebsites = blockedWebsites.splice(li, 1);
-      chrome.storage.local.set({"blockedWebsites": blockedWebsites});
-    };
-    li.appendChild(deleteImage);
-    websiteList.appendChild(li);
-    document.getElementById("url").value = "";
-    chrome.storage.local.set({"blockedWebsites": blockedWebsites});
+
+const updateViewBlocker = () => {
+
+  const websiteList = document.getElementById("websites");
+
+  var childWebsites = websiteList.lastChild;
+  while(childWebsites) {
+      websiteList.removeChild(childWebsites);
+      childWebsites = websiteList.lastChild;
   }
-}
-/*
-function change() { // Define the list of blocked websites
 
-  var currentHostname = window.location.hostname;
+  blockedWebsites.forEach((Element, index) => {
 
-  // Get the current website's hostname
+      const newWebsite = document.createElement("div");
+      newWebsite.setAttribute("class", "website-div");
 
-  // Check if the current website's hostname is in the blockedWebsites array
-  if (blocky.includes(currentHostname)) {
-    // Redirect or block the website (e.g., show a custom page or display an error message)
-    // Example: window.location.href = "blocked.html";
+      const websiteText = document.createElement("div");
+      websiteText.setAttribute("class", "website-text");
+      websiteText.innerHTML = Element.website;
 
-    // Alternatively, you can modify the page content to display a custom message
-    document.head.innerHTML = generateSTYLES();
-    document.body.innerHTML = generateHTML("YOUTUBE");
-  }
+      const websiteControls = document.createElement("div");
+      websiteControls.setAttribute("class", "website-controls");
+
+      const websiteDelete = document.createElement("button");
+      websiteDelete.innerHTML = "Delete";
+      websiteDelete.setAttribute("id", index + "delete");
+      websiteDelete.setAttribute("class", "button2");
+      websiteDelete.addEventListener("click", (event) => deleteWebsite(event.target.id));
+
+      websiteControls.appendChild(websiteDelete);
+
+      newWebsite.appendChild(websiteText);
+      newWebsite.appendChild(websiteControls);
+
+      websiteList.appendChild(newWebsite);
+  });
 }
 
-setInterval(change, 2000);
-*/
+const addWebsite = () => {
+
+  var website = document.getElementById("url").value;
+  if(website === null || website.trim() === "") return;
+  if(website.substring(0,4) != "www."){
+    website = "www." + website;
+  }
+  blockedWebsites.push({website});
+  savedWebsitesList.push(website);
+  console.log(blockedWebsites);
+  console.log(savedWebsitesList);
+  chrome.storage.local.set({"blockerList": savedWebsitesList});
+  localStorage.setItem("savedWebsites", JSON.stringify(blockedWebsites));
+  updateViewBlocker();
+
+  const websiteInput = document.getElementById("url");
+  websiteInput.value = "";
+}
+
+const deleteWebsite = (id) => {
+
+  const websiteIndex = parseInt(id[0]);
+  blockedWebsites.splice(websiteIndex, 1);
+  savedWebsitesList.splice(websiteIndex, 1);
+  chrome.storage.local.set({"blockerList": savedWebsitesList});
+  localStorage.setItem("savedWebsites", JSON.stringify(blockedWebsites));
+  updateViewBlocker();
+}
 
 //API call to update all the user data when restarting app.
 function getValues() {
-  chrome.storage.local.get(['minutes', 'seconds', 'reps', 'curAction', 'workTime', 'breakTime', 'longBreakTime', 'blockedWebsites', 'taskList'], function(data){
+  chrome.storage.local.get(['minutes', 'seconds', 'reps', 'curAction', 'workTime', 'breakTime', 'longBreakTime'], function(data){
       if (data.minutes != undefined){
         minutes = data.minutes;
       } 
@@ -494,13 +457,6 @@ function getValues() {
       if (data.longBreakTime != undefined){
         longBreakTime = data.longBreakTime;
       }
-      if (data.blockedWebsites != undefined){
-        blockedWebsites = data.blockedWebsites;
-      }
-      if (data.taskList != undefined){
-        taskList = data.taskList;
-      } 
-      console.log(taskList);
 
       if (curAction === "Start"){
         console.log("last recorded status: start");
@@ -530,57 +486,13 @@ function getValues() {
       document.getElementById("demo2").innerHTML = breakTime;
       document.getElementById("demo3").innerHTML = longBreakTime;
 
-      /*
-      if (taskList !== undefined){
-      //code for refreshing tasks
-        for (let i = 0; i < taskList.length; i++){
-          document.querySelector('#tasks').innerHTML += ` 
-          <div class="task" style = "background-color: rgb(161, 212, 174); border-radius: 5px; color: rgb(86, 122, 95)">
-              <span id="taskname">
-                 ${taskList[i]}
-              </span>
-              <span class="delete"> 
-                <img style = "height: 40px; width: 40px" src = "images/close-circle.png">
-             </span>
-          </div>
-        `;
-        }
-
-        var current_tasks = document.querySelectorAll(".delete");
-        for (let i = 0; i < current_tasks.length; i++) {
-          current_tasks[i].onclick = function () {
-            this.parentNode.remove();
-            taskList.splice(i,1);
-            chrome.storage.local.set({"taskList" : taskList});
-            console.log(taskList);
-          }
-        }
-      } else {
-        console.log("list is undefined!");
-      }
-      */
       const savedTasks = JSON.parse(localStorage.getItem("savedTasks"));
       if(savedTasks !== null) taskList = [...savedTasks];
       updateView();
 
-      for (var i = 0; i < blockedWebsites.length; i++){
-        var input = document.createElement("text");
-        var websiteList = document.getElementById("website-ul");
-        var li = document.createElement("li");
-        input.innerHTML = blockedWebsites[i];
-        li.appendChild(input);
-        var deleteImage = document.createElement("img");
-        deleteImage.src = "images/close-circle.png";
-        deleteImage.style.width = "20px";
-        deleteImage.onclick = function() {
-          li.parentNode.removeChild(li);
-          blockedWebsites = blockedWebsites.splice(i);
-          chrome.storage.local.set({"blockedWebsites": blockedWebsites});
-        };
-        li.appendChild(deleteImage);
-        websiteList.appendChild(li);
-        document.getElementById("url").value = "";
-      }
+      const savedBlocker = JSON.parse(localStorage.getItem("savedWebsites"));
+      if(savedBlocker !== null) blockedWebsites = [...savedBlocker];
+      updateViewBlocker();
 
       document.getElementById("timer").textContent = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
       document.getElementById("start").textContent = curAction;

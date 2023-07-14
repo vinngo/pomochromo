@@ -16,6 +16,11 @@
           "js": ["blocker.js"]
         }
   ],
+  "icons": {
+    "16": "images/PEEPEEPOOPOO (3)-1.png",
+    "48": "images/PEEPEEPOOPOO (3)-1.png",
+    "128": "images/PEEPEEPOOPOO (3)-1.png"
+  },
 
   "permissions": [
     "storage",

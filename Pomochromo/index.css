@@ -293,3 +293,57 @@ html {
     padding: 0;
     margin: 0;
   }
+
+
+
+  .task-text{
+    position: relative;
+    left: -60px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .button2 {
+    border-radius: 5px;
+    background-color: #fffaeb;
+    font-family: Lucida, sans-serif;
+    font-weight: bold;
+    border: none;
+    color: #73a580;
+    box-shadow: 0px 3px 0px #bfbbaf;
+    font-size: 12px;
+    height: 20px;
+    width: 50px;
+    position: relative;
+    right: -70px;
+    bottom: 18px;
+  }
+
+  .button2:active {
+    transform: translateY(3px);
+    box-shadow: none;
+  }
+
+  .task-div {
+    background-color: rgb(161, 212, 174); 
+    border-radius: 5px; 
+    color: rgb(86, 122, 95);
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  .website-div {
+    background-color: rgb(161, 212, 174); 
+    border-radius: 5px; 
+    color: rgb(86, 122, 95);
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  
+
+.website-text {
+  position: relative;
+  left: -50px;
+}
+

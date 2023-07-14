@@ -3,7 +3,7 @@ var blockedWebsitesList;
 setInterval(updateBlocker, 500);
 setInterval(function(){
   for(let i = 0; i < blockedWebsitesList.length; i++){
-    console.log(blockedWebsitesList[i]);
+    console.log(blockedWebsitesList);
   }
 }, 3000);
 
@@ -132,15 +132,15 @@ switch (window.location.hostname) {
 */
 
 function updateBlocker(){
-  chrome.storage.local.get('blockedWebsites', function(data){
-    blockedWebsitesList = data.blockedWebsites;
+  chrome.storage.local.get("blockerList",function(data){
+    blockedWebsitesList = data.blockerList;
     for (let i = 0; i < blockedWebsitesList.length; i++){
       if (window.location.hostname === blockedWebsitesList[i]){
         document.head.innerHTML = generateSTYLES();
         document.body.innerHTML = generateHTML("YOUTUBE");
       }
     }
+  })
     
-  });
 
 };
