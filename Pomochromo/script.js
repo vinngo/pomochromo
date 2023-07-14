@@ -23,8 +23,25 @@ document.onclose = function(){
   visible = false;
   chrome.storage.local.set({'visible': visible});
 };
-
-
+/*
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+ if (message === "timer finished"){
+  if(loop[reps] === "work"){
+    chrome.notifications.create("work", {
+      type: 'basic',
+      title: 'Work Period is Over',
+      message: 'Open the timer to start your break!'
+    });
+  } else {
+    chrome.notifications.create("break", {
+      type: 'basic',
+      title: 'Break Period is Over',
+      message: 'Open the timer to start your work period!'
+    });
+  }
+ }
+}); 
+*/
 
 function init() {
   document.getElementById("reset").addEventListener("click", reset, true);
@@ -37,7 +54,7 @@ function init() {
   document.getElementById("tasklist").addEventListener("click", openTasks, true);
   document.getElementById("settings").addEventListener("click", openSettings, true);
   document.getElementById("time").addEventListener("click", openTimer, true);
-  document.getElementById("push").addEventListener("click", effectTask, true);
+  document.getElementById("push").addEventListener("click", addTask, true);
   document.getElementById("myRange").addEventListener("mouseup", effectSlider, true);
   document.getElementById("myRange2").addEventListener("mouseup", effectSlider, true);
   document.getElementById("myRange3").addEventListener("mouseup", effectSlider, true);
@@ -271,15 +288,17 @@ function openBlocker() {
   document.getElementById("Blocker").style.display = "block";
 }
 
+/*
 //method for entering tasks
 function effectTask() {
   document.querySelector('#push').onclick = function () {
     if (document.querySelector('#newtask input').value.length == 0) {
-      alert("Enter a fucking task, you little shit!");
+      alert("Please enter a task.");
     }
 
     else {
       taskList.push(document.querySelector('#newtask input').value);
+      console.log(taskList);
       chrome.storage.local.set({"taskList" : taskList});
       document.querySelector('#tasks').innerHTML += ` 
           <div class="task" style = "background-color: rgb(161, 212, 174); border-radius: 5px; color: rgb(86, 122, 95)">
@@ -297,13 +316,73 @@ function effectTask() {
       for (var i = 0; i < current_tasks.length; i++) {
         current_tasks[i].onclick = function () {
           this.parentNode.remove();
-          taskList.splice(i);
+          taskList.splice(i,1);
+          console.log(taskList);
           chrome.storage.local.set({"taskList" : taskList});
         }
       }
+      document.querySelector('#newtask input').value = "";
 
     }
   }
+}
+*/
+
+const updateView = () => {
+
+  const tasksList = document.getElementById("tasks");
+
+  var child = tasksList.lastChild;
+  while(child) {
+      tasksList.removeChild(child);
+      child = tasksList.lastChild;
+  }
+
+  taskList.forEach((Element, index) => {
+
+      const newTask = document.createElement("div");
+      newTask.setAttribute("class", "task-div");
+
+      const taskText = document.createElement("div");
+      taskText.setAttribute("class", Element.isDone ? "task-text task-completed" : "task-text");
+      taskText.innerHTML = (index + 1) + ". " + Element.task;
+
+      const taskControls = document.createElement("div");
+      taskControls.setAttribute("class", "task-controls");
+
+      const taskDelete = document.createElement("button");
+      taskDelete.innerHTML = "Delete";
+      taskDelete.setAttribute("id", index + "delete");
+      taskDelete.setAttribute("class", "task-btn task-btn-delete");
+      taskDelete.addEventListener("click", (event) => deleteTask(event.target.id));
+
+      taskControls.appendChild(taskDelete);
+
+      newTask.appendChild(taskText);
+      newTask.appendChild(taskControls);
+
+      tasksList.appendChild(newTask);
+  });
+}
+
+const addTask = () => {
+
+  const task = document.getElementById("taskinput").value;
+  if(task === null || task.trim() === "") return;
+  taskList.push({task});
+  localStorage.setItem("savedTasks", JSON.stringify(taskList));
+  updateView();
+
+  const taskInput = document.getElementById("task-input");
+  taskInput.value = "";
+}
+
+const deleteTask = (id) => {
+
+  const taskIndex = parseInt(id[0]);
+  taskList.splice(taskIndex, 1);
+  localStorage.setItem("savedTasks", JSON.stringify(taskList));
+  updateView();
 }
 
 //method for changing slider
@@ -451,6 +530,7 @@ function getValues() {
       document.getElementById("demo2").innerHTML = breakTime;
       document.getElementById("demo3").innerHTML = longBreakTime;
 
+      /*
       if (taskList !== undefined){
       //code for refreshing tasks
         for (let i = 0; i < taskList.length; i++){
@@ -478,6 +558,10 @@ function getValues() {
       } else {
         console.log("list is undefined!");
       }
+      */
+      const savedTasks = JSON.parse(localStorage.getItem("savedTasks"));
+      if(savedTasks !== null) taskList = [...savedTasks];
+      updateView();
 
       for (var i = 0; i < blockedWebsites.length; i++){
         var input = document.createElement("text");
