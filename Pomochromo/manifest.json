@@ -1,20 +1,20 @@
 {
-    "manifest_version": 3,
-    "name": "Pomochromo",
-    "description": "add a extention pop up Timer",
-    "version": "1.0",
-    
-    "action":{
-      "default_popup": "index.html",
-      "default_title": "Pomochromo",
-      "default_icon": "images/PROMOCHOROMO.png"
-    },
-   
+  "manifest_version": 3,
+  "name": "Pomochromo",
+  "description": "add a extention pop up Timer",
+  "version": "1.0",
+
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Pomochromo",
+    "default_icon": "images/PROMOCHOROMO.png"
+  },
+
   "content_scripts": [
-        {
-          "matches": ["<all_urls>" ],
-          "js": ["blocker.js"]
-        }
+    {
+      "matches": ["<all_urls>"],
+      "js": ["blocker.js"]
+    }
   ],
   "icons": {
     "16": "images/PEEPEEPOOPOO (3)-1.png",
@@ -22,16 +22,9 @@
     "128": "images/PEEPEEPOOPOO (3)-1.png"
   },
 
-  "permissions": [
-    "storage",
-    "alarms",
-    "notifications",
-    "tabs",
-    "nativeMessaging"
-  ],
+  "permissions": ["storage", "alarms"],
 
   "background": {
     "service_worker": "background.js"
   }
-
 }

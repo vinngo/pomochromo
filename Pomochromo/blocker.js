@@ -1,14 +1,14 @@
 //CSS for error thrown after clicking on blocked website
 var blockedWebsitesList;
 setInterval(updateBlocker, 500);
-setInterval(function(){
-  for(let i = 0; i < blockedWebsitesList.length; i++){
+setInterval(function () {
+  for (let i = 0; i < blockedWebsitesList.length; i++) {
     console.log(blockedWebsitesList);
   }
 }, 3000);
 
 const generateSTYLES = () => {
-    return `<style>@import url(https://fonts.googleapis.com/css?family=opensans:500);
+  return `<style>@import url(https://fonts.googleapis.com/css?family=opensans:500);
     body {
       background: #73a580;
       color: #fff;
@@ -87,10 +87,10 @@ const generateSTYLES = () => {
     
     }
      </style>`;
-  };
-  
-  const generateHTML = (pageName) => {
-    return `
+};
+
+const generateHTML = (pageName) => {
+  return `
      
     <div id="Home" class="w3-container city">
 
@@ -107,40 +107,16 @@ const generateSTYLES = () => {
         <div class='_1'>Everyone who ever loved you was wrong. Get back to work.</div>
     </div>
      `;
-  };
-
-/*
-switch (window.location.hostname) {
-    case "www.youtube.com":
-        document.head.innerHTML = generateSTYLES();
-        document.body.innerHTML = generateHTML("YOUTUBE");
-        break;
-    case "www.instagram.com":
-        document.head.innerHTML = generateSTYLES();
-        document.body.innerHTML = generateHTML("YOUTUBE");
-        break;
-    case "www.tiktok.com":
-        document.head.innerHTML = generateSTYLES();
-        document.body.innerHTML = generateHTML("YOUTUBE");
-        break;
-     case "www.netflix.com":
-        document.head.innerHTML = generateSTYLES();
-        document.body.innerHTML = generateHTML("YOUTUBE");
-        break;
-   
 };
-*/
 
-function updateBlocker(){
-  chrome.storage.local.get("blockerList",function(data){
+function updateBlocker() {
+  chrome.storage.local.get("blockerList", function (data) {
     blockedWebsitesList = data.blockerList;
-    for (let i = 0; i < blockedWebsitesList.length; i++){
-      if (window.location.hostname === blockedWebsitesList[i]){
+    for (let i = 0; i < blockedWebsitesList.length; i++) {
+      if (window.location.hostname === blockedWebsitesList[i]) {
         document.head.innerHTML = generateSTYLES();
         document.body.innerHTML = generateHTML("YOUTUBE");
       }
     }
-  })
-    
-
-};
+  });
+}
