@@ -45,6 +45,9 @@ function init() {
     .getElementById("homebutton")
     .addEventListener("click", openHome, true);
   document
+    .getElementById("scribe")
+    .addEventListener("click", openScribe, true);
+  document
     .getElementById("shield")
     .addEventListener("click", openBlocker, true);
   document
@@ -268,6 +271,15 @@ function startTimer() {
 }
 
 //methods for changing windows
+
+function openScribe() {
+  var i;
+  var x = document.getElementsByClassName("window");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  document.getElementById("Scribe").style.display = "block";
+}
 function openTimer() {
   var i;
   var x = document.getElementsByClassName("window");
@@ -472,6 +484,12 @@ const deleteWebsite = (id) => {
   localStorage.setItem("savedWebsites", JSON.stringify(blockedWebsites));
   updateViewBlocker();
 };
+
+window.onload  =  function() {
+  chrome.tabs.executeScript( {
+  code: "window.getSelection().toString();"
+  }
+)};
 
 //API call to update all the user data when restarting app.
 function getValues() {

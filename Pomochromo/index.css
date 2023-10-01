@@ -154,6 +154,13 @@ h1 {
   box-sizing: border-box;
 }
 
+#aitextbox{
+  width: 90%;
+  height: 100%;
+  border-radius: 5px;
+  resize: none;
+}
+
 .container {
   width: 40%;
   top: 50%;
@@ -345,3 +352,15 @@ h1 {
   position: relative;
   left: -50px;
 }
+
+#ai-container {
+  font-size: 10px;
+  width: 250px;
+  height: 250px;
+  margin: auto;
+  background-color: rgb(139, 187, 151);
+  border-radius: 5px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+

@@ -14,6 +14,11 @@
     </button>
 
     <div class="tab">
+      <button class = "changebutton" id = "scribe">
+        <span class = "button-icon">
+          <img class = "icon" src = "images/gpt-white.png"/>
+        </span>
+      </button>
       <button class="changebutton" id="shield">
         <span class="button-icon">
           <img class="icon" src="images/shield.png" />
@@ -47,6 +52,12 @@
           <h1>PomoChromo <3</h1>
         </div>
       </head>
+    </div>
+    <div id = "Scribe" class = "window" style = "display: none">
+      <h1 style="color: #ffffff; margin-bottom: 10px">Scribe</h1>
+      <div id = "ai-container">
+        <textarea id = "aitextbox" disabled >Highlight something in your browser. Then check back here for an AI generated summary/definition!</textarea>
+      </div>
     </div>
     <div id="Timer" class="window" style="display: none">
       <h1 style="color: #ffffff; margin-bottom: 10px">Focus Timer</h1>

@@ -9,6 +9,12 @@ var breakTime;
 var longBreakTime;
 const loop = ["work", "break", "work", "break", "work", "longbreak"];
 
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if (message.text) {
+    console.log("Selected Text:", message.text);
+  }
+});
+
 chrome.alarms.onAlarm.addListener((alarm) => {
   chrome.storage.local.get(
     [

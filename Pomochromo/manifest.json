@@ -22,9 +22,10 @@
     "128": "images/PEEPEEPOOPOO (3)-1.png"
   },
 
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "tabs", "scripting"],
 
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   }
 }

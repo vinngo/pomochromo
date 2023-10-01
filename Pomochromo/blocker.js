@@ -1,4 +1,5 @@
 //CSS for error thrown after clicking on blocked website
+
 var blockedWebsitesList;
 setInterval(updateBlocker, 500);
 setInterval(function () {
